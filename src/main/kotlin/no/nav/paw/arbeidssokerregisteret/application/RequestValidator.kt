@@ -4,9 +4,12 @@ import no.nav.paw.arbeidssokerregisteret.RequestScope
 import no.nav.paw.arbeidssokerregisteret.application.fakta.*
 import no.nav.paw.arbeidssokerregisteret.application.regler.reglerForInngangIPrioritertRekkefolge
 import no.nav.paw.arbeidssokerregisteret.application.regler.tilgangsReglerIPrioritertRekkefolge
+import no.nav.paw.arbeidssokerregisteret.config.NaisEnv
+import no.nav.paw.arbeidssokerregisteret.config.currentNaisEnv
 import no.nav.paw.arbeidssokerregisteret.domain.Identitetsnummer
 import no.nav.paw.arbeidssokerregisteret.services.AutorisasjonService
 import no.nav.paw.arbeidssokerregisteret.services.PersonInfoService
+import no.nav.paw.arbeidssokerregisteret.utils.logger
 import no.nav.paw.pdl.graphql.generated.hentperson.Person
 
 class RequestValidator(
@@ -33,6 +36,9 @@ class RequestValidator(
             return tilgangsResultat
         } else {
             val person = personInfoService.hentPersonInfo(identitetsnummer.verdi)
+            if (currentNaisEnv == NaisEnv.DevGCP) {
+                logger.info("Hentet: $person")
+            }
             val opplysning = person?.let { genererPersonFakta(it) } ?: setOf(Opplysning.PERSON_IKKE_FUNNET)
             return reglerForInngangIPrioritertRekkefolge.evaluer(opplysning + tilgangsResultat.opplysning)
         }
