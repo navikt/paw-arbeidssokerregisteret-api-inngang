@@ -1,3 +1,5 @@
+Flyttet til paw-arbeidssoekerregisteret-monorepo-intern
+
 # paw-arbeidssokerregisteret-api-inngang
 
 REST-API for å starte arbeidssøkerperioder eller registrere opplysninger om arbeidssøker.
